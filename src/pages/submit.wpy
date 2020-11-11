@@ -1,0 +1,42 @@
+<style lang = "less">
+
+</style>
+
+<template>
+  <view>
+      提交成功！
+      <van-button class="buttons" type="primary" bindtap="goHome">返回主页</van-button>
+  </view>
+</template>
+
+
+<script>
+  import wepy from 'wepy'
+
+  export default class submit extends wepy.page {
+    config = {
+      navigationBarTitleText: '奖学金申请',
+      navigationBarBackgroundColor: '#aaa',
+      usingComponents: {
+        'van-button': '../components/vant/button/index'
+      }
+    }
+    components = {
+    }
+
+    data = {}
+
+    methods = {
+      goHome() {
+        wx.redirectTo({
+          url: 'index'
+        })
+      }
+    }
+
+    events = {}
+
+    onLoads() {
+    }
+}
+</script>

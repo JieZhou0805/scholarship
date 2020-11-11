@@ -1,0 +1,279 @@
+<style lang = "less">
+
+</style>
+
+<template>
+  <view>
+  <form bindsubmit="formSubmit" bindreset="formReset">
+    <view class="baseInfo" wx:if="{{step === 1}}">
+      <text >基本信息：\n</text>
+      <div class="major">
+        <picker 
+          mode="selector" 
+          bindchange="onMajorChange" 
+          value="{{indexMajor}}"
+          range="{{major}}">
+          <van-field label="1. 专业" placeholder="请选择专业"  value="{{major[indexMajor]}}" required>  </van-field>
+        </picker>
+        <van-popup show="{{show}}" position="bottom" bind:confirm="onConfirm" bind:cancel="onCancel" ></van-popup>
+      </div>
+      <van-cell-group>
+        <van-field value="{{ userID }}" label="2. 学号" placeholder="请输入学号" @input="onIdChange" required></van-field>
+      </van-cell-group>
+      <van-cell-group>
+        <van-field value="{{ userName }}" label="3. 姓名" placeholder="请输入姓名" bind:change="onChange" required></van-field>
+      </van-cell-group>
+      <div class="year">
+        <picker 
+          mode="selector" 
+          bindchange="onYearChange" 
+          value="{{indexYear}}"
+          range="{{year}}">
+          <van-field label="4. 学制" placeholder="请选择学制"  value="{{year[indexYear]}}" required>  </van-field>
+        </picker>
+        <van-popup show="{{show}}" position="bottom" bind:confirm="onConfirm" bind:cancel="onCancel" ></van-popup>
+      </div>
+      <van-cell-group>
+        <van-field value="{{ tutor }}" label="5. 导师" placeholder="请输入导师姓名" required></van-field>
+      </van-cell-group>
+      <div class="political">
+        <picker 
+          mode="selector" 
+          bindchange="onPoliticalChange" 
+          value="{{indexPolitical}}"
+          range="{{political}}">
+          <van-field label="6. 政治面貌" placeholder="请选择政治面貌"  value="{{political[indexPolitical]}}" required></van-field>
+        </picker>
+        <van-popup show="{{show}}" position="bottom" bind:confirm="onConfirm" bind:cancel="onCancel" ></van-popup>
+      </div>
+        <van-cell-group>
+          <van-field type="number" label="7. 成绩" placeholder="请输入成绩单平均成绩（保留一位小数）" required></van-field>
+        </van-cell-group>
+      <van-button class="buttons" type="primary" bindtap="nextStep">下一页</van-button>
+    </view>
+
+    <view class="academic" wx:if="{{step === 2}}">
+      <text>学术论著类：\n</text>
+      <div class="year">
+        <picker mode="date" value="{{date}}" start="2015-09-01" end="2017-09-01" bindchange="bindDateChange">
+          <van-field label="1. 发表时间：" placeholder="请选择发表时间"  value="{{date}}" >  </van-field>
+        </picker>
+        <van-popup show="{{show}}" position="bottom" bind:confirm="onConfirm" bind:cancel="onCancel" ></van-popup>
+      </div>
+      <div class="author">
+        <picker 
+          mode="selector" 
+          bindchange="onAuthorChange" 
+          value="{{indexAuthor}}"
+          range="{{author}}">
+          <van-field label="2. 作者排序：" value="{{author[indexAuthor]}}"></van-field>
+        </picker>
+        <van-popup show="{{show}}" position="bottom" bind:confirm="onConfirm" bind:cancel="onCancel" ></van-popup>
+      </div>
+      <van-cell-group>
+        <van-field label="3. 论文题目" placeholder="请输入论文题目" />
+      </van-cell-group>
+      <van-cell-group>
+        <van-field label="4. 发表刊物" placeholder="请输入期刊或会议" />
+      </van-cell-group>
+      <div class="search">
+        <picker 
+          mode="selector" 
+          bindchange="onSearchChange" 
+          value="{{indexSearch}}"
+          range="{{search}}">
+          <van-field label="5. 检索情况：" value="{{search[indexSearch]}}"></van-field>
+        </picker>
+        <van-popup show="{{show}}" position="bottom" bind:confirm="onConfirm" bind:cancel="onCancel" ></van-popup>
+      </div>
+      <van-button class="buttons" type="primary" bindtap="preStep">上一页</van-button>
+      <van-button class="buttons" type="primary" bindtap="nextStep">下一页</van-button>
+    </view>
+    
+    <view class="patent" wx:if="{{step === 3}}">
+      <text>知识产权类：\n</text>
+      <text>1. 时间：</text>
+
+      <text>2. 专利名称：</text>
+      <van-cell-group>
+        <van-field
+        v-model="patentTitle"
+        label="专利名称"
+        @click-icon="patentTitle = ''"
+        />
+      </van-cell-group>
+      <text>3. 成果类型：</text>
+        <van-dropdown-menu>
+          <van-dropdown-item value="{{ valueType }}" options="{{ optionType }}" />
+        </van-dropdown-menu>
+      <text>4. 授权状态：</text>
+        <van-dropdown-menu>
+          <van-dropdown-item value="{{ valueState }}" options="{{ optionState }}" />
+        </van-dropdown-menu>
+      <van-button class="buttons" type="primary" bindtap="preStep">上一页</van-button>
+      <van-button class="buttons" type="primary" bindtap="nextStep">下一页</van-button>
+    </view>
+
+    <view class="award" wx:if="{{step === 4}}">
+      <text>荣誉奖励类：\n</text>
+      <text>1. 获奖时间：</text>
+
+      <text>2. 奖项名称：</text>
+      <van-cell-group>
+        <van-field
+        v-model="awardName"
+        label="奖项名称"
+        @click-icon="awardName = ''"
+        />
+      </van-cell-group>
+      <text>3. 主办单位：</text>
+      <van-cell-group>
+        <van-field
+        v-model="organizer"
+        label="主办单位"
+        @click-icon="organizer = ''"
+        />
+      </van-cell-group>
+      <van-button class="buttons" type="primary" bindtap="preStep">上一页</van-button>
+      <van-button class="buttons" type="primary" bindtap="nextStep">下一页</van-button>
+    </view>
+
+    <view class="position" wx:if="{{step === 5}}">
+      <text>任职经历：\n</text>
+      1. 任职部门：
+      <van-cell-group>
+        <van-field
+        v-model="department"
+        label="任职部门"
+        @click-icon="department = ''"
+        />
+      </van-cell-group>
+      2. 担任职位：
+      <van-cell-group>
+        <van-field
+        v-model="position"
+        label="担任职位"
+        @click-icon="position = ''"
+        />
+      </van-cell-group>
+      <van-button class="buttons" type="primary" bindtap="preStep">上一页</van-button>
+      <van-button type="primary" formType="submit" bindtap="submit">submit</van-button>
+    </view>
+  </form>
+  </view>
+</template>
+
+
+<script>
+  import wepy from 'wepy'
+  export default class submit extends wepy.page {
+    config = {
+      navigationBarTitleText: '信息录入',
+      navigationBarBackgroundColor: '#aaa',
+      usingComponents: {
+        'van-button': '../components/vant/button/index',
+        'van-dropdown-menu': '../components/vant/dropdown-menu/index',
+        'van-dropdown-item': '../components/vant/dropdown-item/index',
+        'van-field': '../components/vant/field/index',
+        'van-cell': '../components/vant/cell/index',
+        'van-cell-group': '../components/vant/cell-group/index',
+        'van-datetime-picker': '../components/vant/datetime-picker/index',
+        'van-popup': '../components/vant/popup/index',
+        'van-picker': '../components/vant/picker/index'
+      }
+    }
+
+    data = {
+      show: false,
+      step: 1,
+      major: ['', '计算机', '信通', '控制'],
+      indexMajor: 0,
+      descriptionMajor: '',
+      userID: '',
+      userName: '',
+      year: ['', '2.5年', '4 年', '5.5年'],
+      indexYear: 0,
+      tutor: '',
+      political: ['', '中共党员', '预备党员', '团员', '群众'],
+      indexPolitical: 0,
+      grade: '',
+      date: '',
+      author: ['', '一作 或 导师一作本人二作', '二作', '三作', '四作'],
+      indexAuthor: 0,
+      search: ['', '已录用', '已检索'],
+      indexSearch: 0,
+
+      optionType: [
+      { text: '发明专利', value: 0 },
+      { text: '实用新型专利', value: 1 },
+      { text: '外观设计专利', value: 1 }
+      ],
+      valueType: -1,
+      optionState: [
+      { text: '已申请', value: 0 },
+      { text: '已授权', value: 1 }
+      ],
+      valueState: -1
+    }
+    methods = {
+      onMajorChange(e) {
+        console.log('major发送选择改变，携带值为', e.detail.value)
+        this.indexMajor = e.detail.value
+        // this.descriptionMajor = this.major[e.detail.value]
+      },
+      onIdChange(e) {
+        this.userID = e.detail.value
+        console.log('ID发送选择改变，携带值为', this.userID)
+      },
+      onYearChange(e) {
+        console.log('year发送选择改变，携带值为', e.detail.value)
+        this.indexYear = e.detail.value
+      },
+      onPoliticalChange(e) {
+        console.log('Political发送选择改变，携带值为', e.detail.value)
+        this.indexPolitical = e.detail.value
+      },
+      bindDateChange(e) {
+        console.log('picker发送选择改变，携带值为', e.detail.value)
+        this.date = e.detail.value
+      },
+      onAuthorChange(e) {
+        console.log('picker发送选择改变，携带值为', e.detail.value)
+        this.indexAuthor = e.detail.value
+      },
+      onSearchChange(e) {
+        console.log('picker发送选择改变，携带值为', e.detail.value)
+        this.indexSearch = e.detail.value
+      },
+      onChange(event) {
+        // event.detail 为当前输入的值
+        console.log(event.detail)
+      },
+      onConfirm(e) {
+        this.show = false
+      },
+      onCancel() {
+        this.show = false
+      },
+      onClose() {
+        this.show = false
+      },
+      nextStep(e) {
+        this.step = this.step + 1
+        console.log(e.detail.value)
+      },
+      preStep() {
+        this.step = this.step - 1
+      //  console.log(this.data.step)
+      },
+      submit() {
+        wx.redirectTo({ url: 'submit' })
+      },
+      formSubmit(e) {
+        console.log('form发生了submit事件，携带数据为：', e.detail.value)
+      }
+    }
+    onLoads() {
+    }
+}
+</script>
